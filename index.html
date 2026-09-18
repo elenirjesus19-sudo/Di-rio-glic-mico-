@@ -593,31 +593,10 @@ function excluir(id) {
 
   mostrarHistorico();
 }
-
-
-// Apagar tudo
-function apagarTudo() {
-
-  if (registros.length === 0) {
-    return;
-  }
-
-  if (!confirm("Apagar todo o histórico?")) {
-    return;
-  }
-
-  registros = [];
-
-  localStorage.removeItem("diarioGlicemico");
-
-  mostrarHistorico();
-}
-
-
-// Inicialização
-preencherDataHora();
-mostrarHistorico();
-
+  // Inicializar o diário
+document.addEventListener("DOMContentLoaded", function () {
+    mostrarHistorico();
+});
 </script>
 
 </body>
