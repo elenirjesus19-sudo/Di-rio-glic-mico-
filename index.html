@@ -3,63 +3,44 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#6a1b9a">
-
 <title>Diário Glicêmico</title>
 
 <style>
-* {
-  box-sizing: border-box;
-}
-
 body {
-  margin: 0;
   font-family: Arial, sans-serif;
-  background: #f4f1f7;
-  color: #222;
-}
-
-header {
-  background: #6a1b9a;
-  color: white;
-  padding: 20px;
-  text-align: center;
-}
-
-header h1 {
+  background: #f4f7f9;
   margin: 0;
-  font-size: 25px;
+  padding: 15px;
+  color: #333;
 }
 
 .container {
   max-width: 600px;
   margin: auto;
-  padding: 15px;
+}
+
+h1 {
+  text-align: center;
+  color: #1976d2;
 }
 
 .card {
   background: white;
-  border-radius: 15px;
   padding: 18px;
   margin-bottom: 15px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-}
-
-h2 {
-  color: #6a1b9a;
-  margin-top: 0;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
 label {
   display: block;
+  margin-top: 10px;
   font-weight: bold;
-  margin-top: 12px;
 }
 
-input,
-select,
-button {
+input, select, button {
   width: 100%;
+  box-sizing: border-box;
   padding: 12px;
   margin-top: 6px;
   border-radius: 8px;
@@ -68,23 +49,18 @@ button {
 }
 
 button {
-  background: #6a1b9a;
+  background: #1976d2;
   color: white;
   border: none;
   font-weight: bold;
-  cursor: pointer;
   margin-top: 15px;
-}
-
-button:hover {
-  background: #4a126d;
 }
 
 .resultado {
   margin-top: 15px;
   padding: 12px;
+  background: #e3f2fd;
   border-radius: 8px;
-  background: #f0e6f5;
   font-weight: bold;
 }
 
@@ -94,354 +70,273 @@ table {
   margin-top: 10px;
 }
 
-th,
-td {
+th, td {
   border: 1px solid #ddd;
-  padding: 10px;
+  padding: 8px;
   text-align: center;
 }
 
 th {
-  background: #6a1b9a;
+  background: #1976d2;
   color: white;
 }
 
-tr:nth-child(even) {
-  background: #f7f7f7;
-}
-
-.registro {
-  border-left: 5px solid #6a1b9a;
-  padding: 10px;
-  margin-top: 10px;
-  background: #fafafa;
-  border-radius: 5px;
-}
-
-.excluir {
-  background: #c62828;
-  margin-top: 8px;
-  padding: 8px;
-  font-size: 14px;
-}
-
 .pequeno {
-  font-size: 14px;
-  color: #666;
-}
-
-footer {
-  text-align: center;
-  padding: 20px;
-  color: #666;
   font-size: 13px;
+  color: #666;
+  margin-top: 10px;
 }
 </style>
 </head>
 
 <body>
 
-<header>
-  <h1>🩸 Diário Glicêmico</h1>
-  <p>Controle diário da glicemia</p>
-</header>
-
 <div class="container">
 
-  <div class="card">
-    <h2>➕ Registrar glicemia</h2>
+<h1>🩸 Diário Glicêmico</h1>
 
-    <label>Data</label>
-    <input type="date" id="data">
+<div class="card">
 
-    <label>Horário</label>
-    <input type="time" id="hora">
+<label>Data</label>
+<input type="date" id="data">
 
-    <label>Glicemia (mg/dL)</label>
-    <input type="number" id="glicemia" placeholder="Ex.: 120">
+<label>Horário</label>
+<input type="time" id="hora">
 
-    <label>Momento</label>
-    <select id="momento">
-      <option value="Jejum">Jejum</option>
-      <option value="Café da manhã">Café da manhã</option>
-      <option value="Lanche">Lanche</option>
-      <option value="Almoço">Almoço</option>
-      <option value="Lanche da tarde">Lanche da tarde</option>
-      <option value="Jantar">Jantar</option>
-      <option value="Antes de dormir">Antes de dormir</option>
-      <option value="Outro">Outro</option>
-    </select>
+<label>Momento</label>
+<select id="momento" onchange="verificarCorrecao()">
+  <option value="">Selecione</option>
+  <option value="Café da manhã">Café da manhã</option>
+  <option value="Lanche">Lanche</option>
+  <option value="Almoço">Almoço</option>
+  <option value="Lanche da tarde">Lanche da tarde</option>
+  <option value="Jantar">Jantar</option>
+</select>
 
-    <label>Observação</label>
-    <input type="text" id="observacao" placeholder="Opcional">
+<label>Glicemia (mg/dL)</label>
+<input type="number" id="glicemia" placeholder="Digite a glicemia"
+       oninput="verificarCorrecao()">
 
-    <button onclick="registrar()">Registrar glicemia</button>
+<div class="resultado" id="resultado">
+  Informe a glicemia para calcular a correção.
+</div>
 
-    <div class="resultado" id="resultado">
-      Digite a glicemia para ver a orientação de correção.
-    </div>
-  </div>
+<label>Observação</label>
+<input type="text" id="observacao" placeholder="Opcional">
 
-
-  <div class="card">
-    <h2>💉 Unidades das refeições</h2>
-
-    <table>
-      <tr>
-        <th>Refeição</th>
-        <th>Insulina</th>
-      </tr>
-      <tr>
-        <td>Café</td>
-        <td>6 UI</td>
-      </tr>
-      <tr>
-        <td>Lanche</td>
-        <td>4 UI</td>
-      </tr>
-      <tr>
-        <td>Almoço</td>
-        <td>10 UI</td>
-      </tr>
-      <tr>
-        <td>Jantar</td>
-        <td>6 UI</td>
-      </tr>
-    </table>
-  </div>
-
-
-  <div class="card">
-    <h2>📊 Esquema de correção</h2>
-
-    <table>
-      <tr>
-        <th>Glicemia</th>
-        <th>Correção</th>
-      </tr>
-      <tr>
-        <td>Até 180</td>
-        <td>0 UI</td>
-      </tr>
-      <tr>
-        <td>181 – 210</td>
-        <td>2 UI</td>
-      </tr>
-      <tr>
-        <td>211 – 255</td>
-        <td>3 UI</td>
-      </tr>
-      <tr>
-        <td>256 – 300</td>
-        <td>4 UI</td>
-      </tr>
-      <tr>
-        <td>301 ou mais</td>
-        <td>Seguir orientação médica</td>
-      </tr>
-    </table>
-
-    <p class="pequeno">
-      Este quadro é apenas o esquema informado por você. 
-      Não altere doses sem orientação do profissional que acompanha seu tratamento.
-    </p>
-  </div>
-
-
-  <div class="card">
-    <h2>📋 Meus registros</h2>
-
-    <div id="lista">
-      Nenhum registro ainda.
-    </div>
-  </div>
+<button onclick="registrar()">Registrar</button>
 
 </div>
 
-<footer>
-  Diário Glicêmico
-</footer>
+<div class="card">
 
+<h2>Doses das refeições</h2>
+
+<table>
+<tr>
+  <th>Refeição</th>
+  <th>Dose</th>
+</tr>
+<tr>
+  <td>Café da manhã</td>
+  <td>6 UI + correção</td>
+</tr>
+<tr>
+  <td>Lanche</td>
+  <td>4 UI</td>
+</tr>
+<tr>
+  <td>Almoço</td>
+  <td>10 UI + correção</td>
+</tr>
+<tr>
+  <td>Lanche da tarde</td>
+  <td>4 UI</td>
+</tr>
+<tr>
+  <td>Jantar</td>
+  <td>6 UI + correção</td>
+</tr>
+</table>
+
+<p class="pequeno">
+Prescrição médica: Dra. Geovana Cavanha Faria — CRM 9217 • RQE 8511
+</p>
+
+</div>
+
+<div class="card">
+
+<h2>Esquema de correção</h2>
+
+<table>
+<tr>
+  <th>Glicemia</th>
+  <th>Correção</th>
+</tr>
+<tr><td>Até 180</td><td>0 UI</td></tr>
+<tr><td>181–210</td><td>2 UI</td></tr>
+<tr><td>211–255</td><td>3 UI</td></tr>
+<tr><td>256–300</td><td>4 UI</td></tr>
+<tr><td>301–345</td><td>5 UI</td></tr>
+<tr><td>346–390</td><td>6 UI</td></tr>
+<tr><td>391–435</td><td>7 UI</td></tr>
+<tr><td>436–480</td><td>8 UI</td></tr>
+<tr><td>Acima de 480</td><td>9 UI</td></tr>
+</table>
+
+</div>
+
+<div class="card">
+
+<h2>📋 Registros</h2>
+<div id="registros"></div>
+
+</div>
+
+</div>
 
 <script>
 
-let registros = JSON.parse(localStorage.getItem("registrosGlicemia")) || [];
+function obterCorrecao(valor) {
 
-function definirDataHora() {
+  if (valor === "" || isNaN(valor)) return 0;
 
-  const agora = new Date();
+  valor = Number(valor);
 
-  const ano = agora.getFullYear();
-  const mes = String(agora.getMonth() + 1).padStart(2, "0");
-  const dia = String(agora.getDate()).padStart(2, "0");
+  if (valor <= 180) return 0;
+  if (valor <= 210) return 2;
+  if (valor <= 255) return 3;
+  if (valor <= 300) return 4;
+  if (valor <= 345) return 5;
+  if (valor <= 390) return 6;
+  if (valor <= 435) return 7;
+  if (valor <= 480) return 8;
 
-  const hora = String(agora.getHours()).padStart(2, "0");
-  const minuto = String(agora.getMinutes()).padStart(2, "0");
-
-  document.getElementById("data").value =
-    `${ano}-${mes}-${dia}`;
-
-  document.getElementById("hora").value =
-    `${hora}:${minuto}`;
+  return 9;
 }
 
+function obterDoseRefeicao(momento) {
+
+  if (momento === "Café da manhã") return 6;
+  if (momento === "Lanche") return 4;
+  if (momento === "Almoço") return 10;
+  if (momento === "Lanche da tarde") return 4;
+  if (momento === "Jantar") return 6;
+
+  return 0;
+}
 
 function verificarCorrecao() {
 
-  const valor = Number(document.getElementById("glicemia").value);
-
+  const glicemia = document.getElementById("glicemia").value;
+  const momento = document.getElementById("momento").value;
   const resultado = document.getElementById("resultado");
 
-  if (!valor) {
-    resultado.innerHTML =
-      "Digite a glicemia para ver a orientação de correção.";
+  if (glicemia === "") {
+    resultado.innerHTML = "Informe a glicemia para calcular a correção.";
     return;
   }
 
-  if (valor <= 180) {
+  const correcao = obterCorrecao(glicemia);
+  const doseRefeicao = obterDoseRefeicao(momento);
+
+  if (doseRefeicao > 0) {
+
+    const total = doseRefeicao + correcao;
 
     resultado.innerHTML =
-      "Glicemia até 180 mg/dL — correção: 0 UI.";
-
-  } else if (valor <= 210) {
-
-    resultado.innerHTML =
-      "Glicemia de 181 a 210 mg/dL — correção informada: 2 UI.";
-
-  } else if (valor <= 255) {
-
-    resultado.innerHTML =
-      "Glicemia de 211 a 255 mg/dL — correção informada: 3 UI.";
-
-  } else if (valor <= 300) {
-
-    resultado.innerHTML =
-      "Glicemia de 256 a 300 mg/dL — correção informada: 4 UI.";
+      "Correção: " + correcao + " UI<br>" +
+      "Dose da refeição: " + doseRefeicao + " UI<br>" +
+      "<strong>Total: " + total + " UI</strong>";
 
   } else {
 
     resultado.innerHTML =
-      "Glicemia acima de 300 mg/dL — seguir a orientação médica.";
-
+      "Correção: " + correcao + " UI";
   }
 }
-
-
-document.getElementById("glicemia").addEventListener(
-  "input",
-  verificarCorrecao
-);
-
 
 function registrar() {
 
   const data = document.getElementById("data").value;
   const hora = document.getElementById("hora").value;
-  const glicemia = document.getElementById("glicemia").value;
   const momento = document.getElementById("momento").value;
+  const glicemia = document.getElementById("glicemia").value;
   const observacao = document.getElementById("observacao").value;
 
-  if (!data || !hora || !glicemia) {
-
-    alert("Preencha a data, o horário e a glicemia.");
-
+  if (!data || !hora || !momento || !glicemia) {
+    alert("Preencha data, horário, momento e glicemia.");
     return;
   }
 
-  const registro = {
+  const correcao = obterCorrecao(glicemia);
+  const doseRefeicao = obterDoseRefeicao(momento);
+  const total = doseRefeicao + correcao;
 
-    data: data,
-    hora: hora,
-    glicemia: glicemia,
-    momento: momento,
-    observacao: observacao
+  const registros =
+    JSON.parse(localStorage.getItem("diarioGlicemico")) || [];
 
-  };
-
-  registros.push(registro);
+  registros.push({
+    data,
+    hora,
+    momento,
+    glicemia,
+    correcao,
+    doseRefeicao,
+    total,
+    observacao
+  });
 
   localStorage.setItem(
-    "registrosGlicemia",
+    "diarioGlicemico",
     JSON.stringify(registros)
   );
 
-  mostrarRegistros();
+  alert("Registro salvo!");
 
-  document.getElementById("glicemia").value = "";
   document.getElementById("observacao").value = "";
 
-  document.getElementById("resultado").innerHTML =
-    "Registro salvo com sucesso! ✅";
+  mostrarRegistros();
 }
-
 
 function mostrarRegistros() {
 
-  const lista = document.getElementById("lista");
+  const registros =
+    JSON.parse(localStorage.getItem("diarioGlicemico")) || [];
+
+  const area = document.getElementById("registros");
 
   if (registros.length === 0) {
-
-    lista.innerHTML = "Nenhum registro ainda.";
-
+    area.innerHTML = "Nenhum registro ainda.";
     return;
   }
 
-  lista.innerHTML = "";
+  area.innerHTML = "";
 
-  registros
-    .slice()
-    .reverse()
-    .forEach((registro, indice) => {
+  registros.slice().reverse().forEach((r) => {
 
-      const div = document.createElement("div");
+    const div = document.createElement("div");
 
-      div.className = "registro";
+    div.style.borderBottom = "1px solid #ddd";
+    div.style.padding = "10px 0";
 
-      div.innerHTML = `
-        <strong>🩸 ${registro.glicemia} mg/dL</strong><br>
-        📅 ${registro.data}<br>
-        ⏰ ${registro.hora}<br>
-        🍽️ ${registro.momento}<br>
-        ${registro.observacao
-          ? "📝 " + registro.observacao
-          : ""}
-        <button
-          class="excluir"
-          onclick="excluirRegistro(${registros.length - 1 - indice})">
-          Excluir
-        </button>
-      `;
+    div.innerHTML =
+      "<strong>" + r.data + " " + r.hora + "</strong><br>" +
+      r.momento + "<br>" +
+      "Glicemia: " + r.glicemia + " mg/dL<br>" +
+      "Correção: " + r.correcao + " UI<br>" +
+      "Dose da refeição: " + r.doseRefeicao + " UI<br>" +
+      "<strong>Total: " + r.total + " UI</strong>" +
+      (r.observacao ? "<br>Obs.: " + r.observacao : "");
 
-      lista.appendChild(div);
-
-    });
+    area.appendChild(div);
+  });
 }
 
-
-function excluirRegistro(indice) {
-
-  if (confirm("Deseja excluir este registro?")) {
-
-    registros.splice(indice, 1);
-
-    localStorage.setItem(
-      "registrosGlicemia",
-      JSON.stringify(registros)
-    );
-    
-
-    mostrarRegistros();
-  }
-}
-  
-  
-
-
-definirDataHora();
 mostrarRegistros();
 
 </script>
 
 </body>
 </html>
-
